@@ -34,7 +34,7 @@ const initialState: NewsState = {
 export const fetchNews = createAsyncThunk<
   Article[],
   { country?: string; category: string; query: string }
->("news/fetchNews", async ({ country, category, query }) => {
+>("news/fetchNews", async ({ country, category, query }: any) => {
   const response = await axios.get(BASE_URL, {
     params: {
       country,

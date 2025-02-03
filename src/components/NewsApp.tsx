@@ -9,22 +9,21 @@ export default function NewsApp({
   category,
   articles,
   status,
-  dispatch,
   setQuery,
   setCategory,
-  fetchNews,
+  fetchNewsAsync,
 }: any) {
   const [searchText, setSearchText] = useState(query);
 
   // Debounce the query update
   useEffect(() => {
     const handler = debounce(() => {
-      dispatch(setQuery(searchText));
+      setQuery(searchText);
     }, 500);
 
     handler();
     return () => handler.cancel();
-  }, [searchText, dispatch, setQuery]);
+  }, [searchText, setQuery, fetchNewsAsync]);
 
   return (
     <div className="p-6 min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -45,9 +44,7 @@ export default function NewsApp({
           />
         </div>
         <button
-          onClick={() =>
-            dispatch(fetchNews({ country: "us", category, query }))
-          }
+          onClick={() => fetchNewsAsync({ country: "us", category, query })}
           className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition shadow-md"
         >
           Search
@@ -59,7 +56,7 @@ export default function NewsApp({
         {categories.map((cat) => (
           <button
             key={cat}
-            onClick={() => dispatch(setCategory(cat.toLowerCase()))}
+            onClick={() => setCategory(cat.toLowerCase())}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
               category === cat.toLowerCase()
                 ? "bg-blue-600 text-white shadow-md"

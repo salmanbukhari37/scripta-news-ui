@@ -1,20 +1,23 @@
 // App.tsx
 import React, { useCallback, useEffect, useState } from "react";
-import { RootState, useAppDispatch, useAppSelector } from "./redux/store"; // adjust the path if needed
+import { RootState, useAppDispatch, useAppSelector } from "./redux/store";
 import NewsApp from "components/NewsApp";
 import { debounce } from "lodash";
 import { fetchNews, setCategory, setQuery } from "./redux/reducers/newsSlice";
 
 const App: React.FC = () => {
-  const randomPicture = "https://picsum.photos/200/300";
-  const dispatch = useAppDispatch(); // Use the custom hook for dispatch
+  const dispatch = useAppDispatch();
   const { articles, category, query, status }: any = useAppSelector(
     (state: RootState) => state.news
   );
   const [searchTerm, setSearchTerm] = useState(query);
 
-  useEffect(() => {
+  const fetchNewsAsync = () => {
     dispatch(fetchNews({ country: "us", category, query }));
+  };
+
+  useEffect(() => {
+    fetchNewsAsync();
   }, [category, query, dispatch]);
 
   const debouncedSetQuery = useCallback(
@@ -29,9 +32,13 @@ const App: React.FC = () => {
 
   return (
     <NewsApp
-      {...{ articles, category, query, status, dispatch }}
+      articles={articles}
+      category={category}
+      query={query}
+      status={status}
       setQuery={handleSearch}
-      setCategory={setCategory}
+      setCategory={(category: string) => dispatch(setCategory(category))}
+      fetchNewsAsync={fetchNewsAsync}
     />
   );
 };
