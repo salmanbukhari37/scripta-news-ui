@@ -1,75 +1,70 @@
-import React, { useState } from "react";
+import React from "react";
+import { DarkModeSwitch } from "react-toggle-dark-mode";
+import { FiSearch } from "react-icons/fi";
+import newsPaper from "../assets/newspaper.png";
+import { Page } from "enums/page.enum";
 
-const Navbar: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
+interface NavbarProps {
+  darkMode: boolean;
+  toggleDarkMode: () => void;
+  searchText: string;
+  setSearchText: (text: string) => void;
+  toggleSidebar: () => void; // Added this prop to toggle the sidebar
+}
 
-  // Function to toggle mobile menu
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
-
+const Navbar: React.FC<NavbarProps> = ({
+  darkMode,
+  toggleDarkMode,
+  searchText,
+  setSearchText,
+  toggleSidebar, // Destructure toggleSidebar from props
+}) => {
   return (
-    <nav className="bg-gray-800 p-4">
-      <div className="max-w-7xl mx-auto flex justify-between items-center">
-        {/* Logo or Brand */}
-        <a href="#" className="text-white text-2xl font-bold">
-          MyBrand
-        </a>
+    <header className="bg-white dark:bg-gray-800 shadow-md p-4 mb-8 flex items-center justify-between">
+      {/* Hamburger Icon (visible on mobile) */}
+      <button
+        className="lg:hidden text-gray-800 dark:text-white"
+        onClick={toggleSidebar} // Toggle sidebar visibility on click
+      >
+        ☰
+      </button>
 
-        {/* Desktop Menu Items */}
-        <div className="hidden md:flex space-x-4">
-          <a href="#" className="text-white hover:text-gray-400">
-            Home
-          </a>
-          <a href="#" className="text-white hover:text-gray-400">
-            About
-          </a>
-          <a href="#" className="text-white hover:text-gray-400">
-            Services
-          </a>
-          <a href="#" className="text-white hover:text-gray-400">
-            Contact
-          </a>
-        </div>
+      {/* Logo and Title */}
+      <h1 className="text-4xl font-extrabold text-gray-800 dark:text-gray-200 flex items-center space-x-4">
+        <img
+          src={newsPaper}
+          alt="News App Logo"
+          className="w-12 h-12 object-contain"
+        />
+        <span className="hidden lg:block text-2xl font-bold text-gray-800 dark:text-gray-200">
+          News App
+        </span>
+      </h1>
 
-        {/* Mobile Menu Button */}
-        <div className="md:hidden">
-          <button
-            className="text-white focus:outline-none"
-            onClick={toggleMenu}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M3 12h18M3 6h18M3 18h18"></path>
-            </svg>
-          </button>
+      {/* Controls (Dark Mode, Search) */}
+      <div className="flex items-center space-x-4">
+        {/* Dark Mode Toggle */}
+        <DarkModeSwitch
+          checked={darkMode}
+          sunColor="#FFCC00"
+          moonColor="#A9B4C2"
+          onChange={toggleDarkMode}
+          size={30}
+        />
+
+        {/* Search Bar */}
+        <div className="relative w-full">
+          <input
+            type="text"
+            placeholder="Search news..."
+            className="border p-3 pl-12 pr-4 w-full rounded-lg dark:bg-gray-800 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 shadow-md"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
+          <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400" />
         </div>
       </div>
-
-      {/* Mobile Menu Items */}
-      <div className={`md:hidden ${isOpen ? "block" : "hidden"}`}>
-        <a href="#" className="block text-white px-4 py-2 hover:bg-gray-700">
-          Home
-        </a>
-        <a href="#" className="block text-white px-4 py-2 hover:bg-gray-700">
-          About
-        </a>
-        <a href="#" className="block text-white px-4 py-2 hover:bg-gray-700">
-          Services
-        </a>
-        <a href="#" className="block text-white px-4 py-2 hover:bg-gray-700">
-          Contact
-        </a>
-      </div>
-    </nav>
+    </header>
   );
 };
 
