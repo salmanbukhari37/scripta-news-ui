@@ -28,6 +28,7 @@ interface NewsState {
   query: string;
   status: "idle" | "loading" | "succeeded" | "failed";
   sources: Source[];
+
   sourcesStatus: "idle" | "loading" | "succeeded" | "failed";
   selectedSource: string; // New state for selected source
 }

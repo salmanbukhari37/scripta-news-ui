@@ -3,9 +3,8 @@ import { debounce } from "lodash";
 import { useContext, useEffect, useState } from "react";
 import { useAppSelector } from "../redux/store";
 import ArticleContent from "./ArticleContent";
-import Categories from "./Categories";
-import Navbar from "./Navbar";
-import SourcesSection from "./SourcesSection";
+import LeftSidebar from "./LeftSidebar";
+import Navbar from "./navbar/Navbar";
 import TrendingArticles from "./TrendingArticles";
 
 export default function NewsApp({
@@ -18,24 +17,37 @@ export default function NewsApp({
 }: any) {
   const [searchText, setSearchText] = useState(query);
   const context = useContext(DarkModeContext);
-  const [sidebarOpen, setSidebarOpen] = useState(false); // For toggling sidebar on mobile
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isSourcesExpanded, setIsSourcesExpanded] = useState(true); // Track if sources are expanded
+  const [isArticlesExpanded, setIsArticlesExpanded] = useState(false); // Track if articles are expanded
 
   const { categories, category }: any = useAppSelector(
     (state: any) => state.news
   );
 
-  // Extract sources from articles and ensure they are unique
   const sources = Array.from(
     new Set(articles.map((article: any) => article.source.name))
   );
+  const authors = Array.from(
+    new Set(
+      articles
+        .map((article: any) => article.author)
+        .filter((author: any) => author)
+    )
+  );
 
   const [selectedSources, setSelectedSources] = useState<string[]>([]);
+  const [selectedAuthors, setSelectedAuthors] = useState<string[]>([]); // New state for authors filter
 
-  const filteredArticles = selectedSources.length
-    ? articles.filter((article: any) =>
-        selectedSources.includes(article.source.name)
-      )
-    : articles;
+  const filteredArticles = articles
+    .filter((article: any) =>
+      selectedSources.length
+        ? selectedSources.includes(article.source.name)
+        : true
+    )
+    .filter((article: any) =>
+      selectedAuthors.length ? selectedAuthors.includes(article.author) : true
+    );
 
   if (!context) {
     throw new Error("DarkModeToggle must be used within a DarkModeProvider");
@@ -52,12 +64,11 @@ export default function NewsApp({
     return () => handler.cancel();
   }, [searchText, setQuery, fetchNewsAsync]);
 
-  // Reset selected sources when category changes
   useEffect(() => {
-    setSelectedSources([]); // Reset sources when the category changes
+    setSelectedSources([]);
+    setSelectedAuthors([]);
   }, [category]);
 
-  // Handle source selection change (checkbox)
   const handleSourceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const source = event.target.value;
     setSelectedSources((prevSelectedSources) =>
@@ -67,34 +78,52 @@ export default function NewsApp({
     );
   };
 
+  const handleAuthorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const author = event.target.value;
+    setSelectedAuthors((prevSelectedAuthors) =>
+      prevSelectedAuthors.includes(author)
+        ? prevSelectedAuthors.filter((item) => item !== author)
+        : [...prevSelectedAuthors, author]
+    );
+  };
+
+  const toggleExpandSource = () => {
+    setIsSourcesExpanded(!isSourcesExpanded);
+    if (!isSourcesExpanded) setIsArticlesExpanded(false); // Collapse articles if sources are expanded
+  };
+
+  const toggleExpandArticle = () => {
+    setIsArticlesExpanded(!isArticlesExpanded);
+    if (!isArticlesExpanded) setIsSourcesExpanded(false); // Collapse sources if articles are expanded
+  };
+
   return (
     <div className="flex min-h-screen flex-col bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="flex">
-        {/* Left Sidebar */}
         <div
           className={`${
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
-          } lg:translate-x-0 lg:block w-64 p-4 space-y-6 flex-shrink-0 bg-white text-gray-900 dark:bg-black dark:text-white transition-transform duration-300 fixed lg:static z-50 top-0 left-0 bottom-0`}
+          } lg:translate-x-0 lg:block w-64 p-4 space-y-6 flex-shrink-0 bg-white text-gray-900 dark:bg-gray-800 dark:text-white transition-transform duration-300 fixed lg:static z-50 top-0 left-0 bottom-0 lg:top-0 overflow-y-auto`}
         >
-          {/* Categories Section */}
-          <div>
-            <h2 className="text-lg font-semibold mb-6">Categories</h2>
-            <Categories
-              categories={categories}
-              category={category}
-              setCategory={setCategory}
-            />
-          </div>
-
-          {/* Sources Section */}
-          <SourcesSection
+          <LeftSidebar
+            darkMode={darkMode}
+            toggleDarkMode={toggleDarkMode}
+            searchText={searchText}
+            setCategory={setCategory}
+            setSearchText={setSearchText}
             sources={sources}
             selectedSources={selectedSources}
             handleSourceChange={handleSourceChange}
+            authors={authors}
+            selectedAuthors={selectedAuthors}
+            handleAuthorChange={handleAuthorChange}
+            toggleExpandSource={toggleExpandSource}
+            toggleExpandArticle={toggleExpandArticle}
+            isSourcesExpanded={isSourcesExpanded}
+            isArticlesExpanded={isArticlesExpanded}
           />
         </div>
 
-        {/* Overlay for mobile */}
         {sidebarOpen && (
           <div
             className="fixed inset-0 bg-black bg-opacity-50 z-40"
@@ -102,23 +131,19 @@ export default function NewsApp({
           ></div>
         )}
 
-        {/* Main Content */}
         <main className="flex-1 p-6">
           <Navbar
             darkMode={darkMode}
             toggleDarkMode={toggleDarkMode}
             searchText={searchText}
             setSearchText={setSearchText}
-            toggleSidebar={() => setSidebarOpen(!sidebarOpen)} // Toggle sidebar on mobile
+            toggleSidebar={() => setSidebarOpen(!sidebarOpen)}
           />
-          <div className="p-6">
-            {/* Responsive grid layout */}
+          <div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {/* Main Content */}
               <div className="sm:col-span-2 lg:col-span-3 order-2 lg:order-none">
                 <ArticleContent articles={filteredArticles} status={status} />
               </div>
-              {/* Trending Articles (should be on top on mobile) */}
               <div className="sm:col-span-2 lg:col-span-1 order-1 lg:order-none h-auto sm:h-screen lg:sticky lg:top-0">
                 <TrendingArticles articles={filteredArticles} />
               </div>

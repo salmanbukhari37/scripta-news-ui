@@ -3,12 +3,7 @@ import { RootState, useAppDispatch, useAppSelector } from "./redux/store";
 import NewsApp from "components/NewsApp";
 import { debounce } from "lodash";
 import { Helmet } from "react-helmet";
-import {
-  fetchNews,
-  fetchSources,
-  setCategory,
-  setQuery,
-} from "./redux/reducers/newsSlice";
+import { fetchNews, setCategory, setQuery } from "./redux/reducers/newsSlice";
 import { DarkModeProvider } from "context/DarkModeContext";
 import { capitalizeFirstLetter } from "helpers/utils";
 import { Page } from "enums/page.enum";
