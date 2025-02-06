@@ -1,7 +1,10 @@
-import { DarkModeContext } from "context/DarkModeContext";
 import { debounce } from "lodash";
-import { useContext, useEffect, useState } from "react";
-import { useAppSelector } from "../redux/store";
+import { useEffect, useState } from "react";
+import {
+  setSelectedAuthors,
+  setSelectedSources,
+} from "../redux/reducers/newsSlice";
+import { useAppDispatch, useAppSelector } from "../redux/store";
 import ArticleContent from "./ArticleContent";
 import LeftSidebar from "./LeftSidebar";
 import Navbar from "./navbar/Navbar";
@@ -9,21 +12,17 @@ import TrendingArticles from "./TrendingArticles";
 
 export default function NewsApp({
   query,
-  articles,
-  status,
   setQuery,
+  darkMode,
   setCategory,
   fetchNewsAsync,
+  toggleDarkMode,
 }: any) {
+  const dispatch = useAppDispatch();
   const [searchText, setSearchText] = useState(query);
-  const context = useContext(DarkModeContext);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isSourcesExpanded, setIsSourcesExpanded] = useState(true); // Track if sources are expanded
-  const [isArticlesExpanded, setIsArticlesExpanded] = useState(false); // Track if articles are expanded
-
-  const { categories, category }: any = useAppSelector(
-    (state: any) => state.news
-  );
+  const { category, selectedSources, selectedAuthors, status, articles }: any =
+    useAppSelector((state: any) => state.news);
 
   const sources = Array.from(
     new Set(articles.map((article: any) => article.source.name))
@@ -36,8 +35,13 @@ export default function NewsApp({
     )
   );
 
-  const [selectedSources, setSelectedSources] = useState<string[]>([]);
-  const [selectedAuthors, setSelectedAuthors] = useState<string[]>([]); // New state for authors filter
+  const setSelectedAuthorsHandler = (payload: any) => {
+    dispatch(setSelectedAuthors(payload));
+  };
+
+  const setSelectedSourcesHandler = (payload: any) => {
+    dispatch(setSelectedSources(payload));
+  };
 
   const filteredArticles = articles
     .filter((article: any) =>
@@ -49,12 +53,6 @@ export default function NewsApp({
       selectedAuthors.length ? selectedAuthors.includes(article.author) : true
     );
 
-  if (!context) {
-    throw new Error("DarkModeToggle must be used within a DarkModeProvider");
-  }
-
-  const { darkMode, toggleDarkMode } = context;
-
   useEffect(() => {
     const handler = debounce(() => {
       setQuery(searchText);
@@ -65,36 +63,24 @@ export default function NewsApp({
   }, [searchText, setQuery, fetchNewsAsync]);
 
   useEffect(() => {
-    setSelectedSources([]);
-    setSelectedAuthors([]);
+    setSelectedSourcesHandler([]);
+    setSelectedAuthorsHandler([]);
   }, [category]);
 
   const handleSourceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const source = event.target.value;
-    setSelectedSources((prevSelectedSources) =>
-      prevSelectedSources.includes(source)
-        ? prevSelectedSources.filter((item) => item !== source)
-        : [...prevSelectedSources, source]
-    );
+    const updatedSources = selectedSources.includes(source)
+      ? selectedSources.filter((item: any) => item !== source)
+      : [...selectedSources, source];
+    setSelectedSourcesHandler(updatedSources);
   };
 
   const handleAuthorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const author = event.target.value;
-    setSelectedAuthors((prevSelectedAuthors) =>
-      prevSelectedAuthors.includes(author)
-        ? prevSelectedAuthors.filter((item) => item !== author)
-        : [...prevSelectedAuthors, author]
-    );
-  };
-
-  const toggleExpandSource = () => {
-    setIsSourcesExpanded(!isSourcesExpanded);
-    if (!isSourcesExpanded) setIsArticlesExpanded(false); // Collapse articles if sources are expanded
-  };
-
-  const toggleExpandArticle = () => {
-    setIsArticlesExpanded(!isArticlesExpanded);
-    if (!isArticlesExpanded) setIsSourcesExpanded(false); // Collapse sources if articles are expanded
+    const updatedAuthors = selectedAuthors.includes(author)
+      ? selectedAuthors.filter((item: any) => item !== author)
+      : [...selectedAuthors, author];
+    setSelectedAuthorsHandler(updatedAuthors);
   };
 
   return (
@@ -112,15 +98,9 @@ export default function NewsApp({
             setCategory={setCategory}
             setSearchText={setSearchText}
             sources={sources}
-            selectedSources={selectedSources}
             handleSourceChange={handleSourceChange}
             authors={authors}
-            selectedAuthors={selectedAuthors}
             handleAuthorChange={handleAuthorChange}
-            toggleExpandSource={toggleExpandSource}
-            toggleExpandArticle={toggleExpandArticle}
-            isSourcesExpanded={isSourcesExpanded}
-            isArticlesExpanded={isArticlesExpanded}
           />
         </div>
 
@@ -133,8 +113,6 @@ export default function NewsApp({
 
         <main className="flex-1 p-6">
           <Navbar
-            darkMode={darkMode}
-            toggleDarkMode={toggleDarkMode}
             searchText={searchText}
             setSearchText={setSearchText}
             toggleSidebar={() => setSidebarOpen(!sidebarOpen)}

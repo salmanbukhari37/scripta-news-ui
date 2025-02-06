@@ -1,56 +1,41 @@
 import { DarkModeSwitch } from "react-toggle-dark-mode";
-import { FiSearch, FiChevronDown, FiChevronUp } from "react-icons/fi"; // Chevron icons for expanding/collapsing
+import { FiSearch } from "react-icons/fi";
 import Categories from "./Categories";
-import SourcesSection from "./SourcesSection";
-import { useAppSelector } from "../redux/store";
+import { useAppDispatch, useAppSelector } from "../redux/store";
 
 import React from "react";
 import CollapsibleFilter from "./filters/CollapsibleFilter";
+import {
+  toggleArticlesExpanded,
+  toggleSourcesExpanded,
+} from "../redux/reducers/newsSlice";
+import { ILeftSidebar } from "dto/interfaces";
 
-interface LeftSidebarProps {
-  darkMode: boolean;
-  toggleDarkMode: () => void;
-  searchText: string;
-  setSearchText: (text: string) => void;
-  sources: any[];
-  selectedSources: string[];
-  setCategory: any;
-  handleSourceChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  authors: any[];
-  selectedAuthors: string[];
-  handleAuthorChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  toggleExpandSource: () => void; // Add this to handle source section expand/collapse
-  toggleExpandArticle: () => void; // Add this to handle article section expand/collapse
-  isSourcesExpanded: boolean;
-  isArticlesExpanded: boolean;
-}
-
-const LeftSidebar: React.FC<LeftSidebarProps> = ({
+const LeftSidebar: React.FC<ILeftSidebar> = ({
   darkMode,
   toggleDarkMode,
   searchText,
   setSearchText,
   sources,
-  selectedSources,
   setCategory,
   handleSourceChange,
   authors,
-  selectedAuthors,
   handleAuthorChange,
-  toggleExpandSource,
-  toggleExpandArticle,
-  isArticlesExpanded,
-  isSourcesExpanded,
 }) => {
-  const { categories, category }: any = useAppSelector(
-    (state: any) => state.news
-  );
+  const dispatch = useAppDispatch();
+
+  const {
+    categories,
+    category,
+    isSourcesExpanded,
+    isArticlesExpanded,
+    selectedSources,
+    selectedAuthors,
+  }: any = useAppSelector((state: any) => state.news);
 
   return (
     <div className="w-64 p-4 space-y-6 flex-shrink-0 bg-white text-gray-900 dark:bg-gray-800 dark:text-white transition-transform duration-300 fixed lg:static z-50 top-0 left-0 bottom-0 lg:top-0 overflow-y-auto">
-      {/* Dark Mode and Search Bar on Left Sidebar */}
       <div className="flex items-center mb-4 justify-between lg:hidden space-x-4">
-        {/* Dark Mode Toggle */}
         <DarkModeSwitch
           checked={darkMode}
           sunColor="#FFCC00"
@@ -59,7 +44,6 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
           size={30}
         />
 
-        {/* Search Bar */}
         <div className="relative">
           <input
             type="text"
@@ -72,7 +56,6 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
         </div>
       </div>
 
-      {/* Categories Section */}
       <div className="pr-4">
         <Categories
           categories={categories}
@@ -81,23 +64,21 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
         />
       </div>
 
-      {/* Sources Section */}
       <CollapsibleFilter
         title="Select News Source(s)"
         items={sources}
         selectedItems={selectedSources}
         handleItemChange={handleSourceChange}
-        toggleExpand={toggleExpandSource}
+        toggleExpand={() => dispatch(toggleSourcesExpanded())} // Dispatch action to toggle
         isExpanded={isSourcesExpanded}
       />
 
-      {/* Authors Section */}
       <CollapsibleFilter
         title="Select Author(s)"
         items={authors}
         selectedItems={selectedAuthors}
         handleItemChange={handleAuthorChange}
-        toggleExpand={toggleExpandArticle}
+        toggleExpand={() => dispatch(toggleArticlesExpanded())} // Dispatch action to toggle
         isExpanded={isArticlesExpanded}
       />
     </div>

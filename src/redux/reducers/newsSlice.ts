@@ -1,50 +1,10 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import { Article, NewsState, Source } from "dto/interfaces";
 
 const API_KEY = "807108fb6acf434c9411606ae7acbc46";
 const BASE_URL = "https://newsapi.org/v2";
 
-// Define interfaces
-interface Article {
-  source: { name: string };
-  author: string;
-  title: string;
-  description: string;
-  url: string;
-  urlToImage: string;
-  publishedAt: string;
-  content: string;
-}
-
-interface Source {
-  id: string;
-  name: string;
-}
-
-interface NewsState {
-  categories: string[];
-  articles: Article[];
-  category: string;
-  query: string;
-  status: "idle" | "loading" | "succeeded" | "failed";
-  sources: Source[];
-
-  sourcesStatus: "idle" | "loading" | "succeeded" | "failed";
-  selectedSource: string; // New state for selected source
-}
-
-const initialState: NewsState = {
-  categories: ["Technology", "Business", "Sports", "Health", "Science"],
-  articles: [],
-  category: "technology",
-  query: "",
-  status: "idle",
-  sources: [],
-  sourcesStatus: "idle",
-  selectedSource: "", // Initialize selectedSource
-};
-
-// Fetch news articles
 export const fetchNews = createAsyncThunk<
   Article[],
   { country?: string; category: string; query: string; source?: string }
@@ -54,69 +14,109 @@ export const fetchNews = createAsyncThunk<
       country,
       category,
       q: query,
-      sources: source, // Use the selected source as a filter
+      sources: source,
       apiKey: API_KEY,
     },
   });
   return response.data.articles;
 });
 
-// Fetch sources
-export const fetchSources = createAsyncThunk<
-  Source[],
-  string // country (e.g., "usa")
->("news/fetchSources", async (country: string) => {
-  const response = await axios.get(`${BASE_URL}/top-headlines/sources`, {
-    params: {
-      country,
-      apiKey: API_KEY,
-    },
-  });
-  return response.data.sources;
-});
+export const fetchSources = createAsyncThunk<Source[], string>(
+  "news/fetchSources",
+  async (country: string) => {
+    const response = await axios.get(`${BASE_URL}/top-headlines/sources`, {
+      params: {
+        country,
+        apiKey: API_KEY,
+      },
+    });
+    return response.data.sources;
+  }
+);
+
+const initialState: NewsState = {
+  categories: ["Technology", "Business", "Sports", "Health", "Science"],
+  articles: [],
+  selectedSources: [],
+  selectedAuthors: [],
+  sources: [],
+  category: "technology",
+  query: "",
+  status: "idle",
+  sourcesStatus: "idle",
+  selectedSource: "",
+  isSourcesExpanded: true,
+  isArticlesExpanded: false,
+};
 
 const newsSlice = createSlice({
   name: "news",
   initialState,
   reducers: {
-    setCategory: (state, action: PayloadAction<string>) => {
+    setCategory: (state: NewsState, action: PayloadAction<string>) => {
       state.category = action.payload;
     },
-    setQuery: (state, action: PayloadAction<string>) => {
+    setQuery: (state: NewsState, action: PayloadAction<string>) => {
       state.query = action.payload;
     },
-    setSelectedSource: (state, action: PayloadAction<string>) => {
-      state.selectedSource = action.payload; // Set selected source
+    setSelectedSource: (state: NewsState, action: PayloadAction<string>) => {
+      state.selectedSource = action.payload;
+    },
+    toggleSourcesExpanded: (state: NewsState) => {
+      state.isSourcesExpanded = !state.isSourcesExpanded;
+      state.isArticlesExpanded = !state.isSourcesExpanded;
+    },
+    toggleArticlesExpanded: (state: NewsState) => {
+      state.isArticlesExpanded = !state.isArticlesExpanded;
+      state.isSourcesExpanded = !state.isArticlesExpanded;
+    },
+    setSelectedSources: (state: NewsState, action: PayloadAction<string[]>) => {
+      state.selectedSources = action.payload;
+    },
+    setSelectedAuthors: (state: NewsState, action: PayloadAction<string[]>) => {
+      state.selectedAuthors = action.payload;
     },
   },
-  extraReducers: (builder) => {
-    // Handling fetchNews (articles) states
+  extraReducers: (builder: any) => {
     builder
-      .addCase(fetchNews.pending, (state) => {
+      .addCase(fetchNews.pending, (state: NewsState) => {
         state.status = "loading";
       })
-      .addCase(fetchNews.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.articles = action.payload;
-      })
-      .addCase(fetchNews.rejected, (state) => {
+      .addCase(
+        fetchNews.fulfilled,
+        (state: NewsState, action: PayloadAction<any>) => {
+          state.status = "succeeded";
+          state.articles = action.payload;
+        }
+      )
+      .addCase(fetchNews.rejected, (state: NewsState) => {
         state.status = "failed";
       });
 
-    // Handling fetchSources (sources) states
     builder
-      .addCase(fetchSources.pending, (state) => {
+      .addCase(fetchSources.pending, (state: NewsState) => {
         state.sourcesStatus = "loading";
       })
-      .addCase(fetchSources.fulfilled, (state, action) => {
-        state.sourcesStatus = "succeeded";
-        state.sources = action.payload;
-      })
-      .addCase(fetchSources.rejected, (state) => {
+      .addCase(
+        fetchSources.fulfilled,
+        (state: NewsState, action: PayloadAction<any>) => {
+          state.sourcesStatus = "succeeded";
+          state.sources = action.payload;
+        }
+      )
+      .addCase(fetchSources.rejected, (state: NewsState) => {
         state.sourcesStatus = "failed";
       });
   },
 });
 
-export const { setCategory, setQuery, setSelectedSource } = newsSlice.actions;
+export const {
+  setCategory,
+  setQuery,
+  setSelectedSource,
+  toggleSourcesExpanded,
+  toggleArticlesExpanded,
+  setSelectedSources,
+  setSelectedAuthors,
+} = newsSlice.actions;
 export default newsSlice.reducer;

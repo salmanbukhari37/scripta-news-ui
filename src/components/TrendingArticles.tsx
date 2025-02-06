@@ -1,18 +1,9 @@
 import React from "react";
+import { ITrendingArticles } from "dto/interfaces";
 
-interface Article {
-  urlToImage: string;
-  title: string;
-  url: string;
-}
-
-interface TrendingArticlesProps {
-  articles: Article[];
-}
-
-const TrendingArticles: React.FC<TrendingArticlesProps> = ({ articles }) => {
+const TrendingArticles: React.FC<ITrendingArticles> = ({ articles }) => {
   return (
-    <aside className="space-y-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-lg shadow-md sticky top-0 z-10">
+    <aside className="space-y-4 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md sticky top-0 z-10">
       <h2 className="text-lg font-semibold mb-4">Trending Articles</h2>
       {articles.slice(0, 5).map((article, index) => (
         <div key={index} className="flex items-start gap-4">

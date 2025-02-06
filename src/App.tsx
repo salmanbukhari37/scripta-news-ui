@@ -4,21 +4,19 @@ import NewsApp from "components/NewsApp";
 import { debounce } from "lodash";
 import { Helmet } from "react-helmet";
 import { fetchNews, setCategory, setQuery } from "./redux/reducers/newsSlice";
-import { DarkModeProvider } from "context/DarkModeContext";
 import { capitalizeFirstLetter } from "helpers/utils";
-import { Page } from "enums/page.enum";
+import { Page } from "./dto/enums/page.enum";
+import { toggleDarkMode } from "./redux/reducers/themeSlice";
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  // Fetch sources when the component mounts
-  useEffect(() => {}, [dispatch]);
-
-  const { articles, category, query, status }: any = useAppSelector(
+  const { category, query }: any = useAppSelector(
     (state: RootState) => state.news
   );
+
+  const { darkMode }: any = useAppSelector((state: RootState) => state.theme);
   const [searchTerm, setSearchTerm] = useState(query);
-  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
 
   const fetchNewsAsync = () => {
     dispatch(fetchNews({ country: "us", category, query }));
@@ -38,14 +36,20 @@ const App: React.FC = () => {
     debouncedSetQuery(value);
   };
 
-  const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    setTheme(newTheme);
-    localStorage.setItem("theme", newTheme);
+  const handleToggleDarkMode = () => {
+    dispatch(toggleDarkMode());
   };
 
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.setAttribute("data-mode", "dark");
+    } else {
+      document.documentElement.removeAttribute("data-mode");
+    }
+  }, [darkMode]);
+
   return (
-    <DarkModeProvider>
+    <>
       <Helmet>
         <title>
           {category
@@ -54,17 +58,14 @@ const App: React.FC = () => {
         </title>
       </Helmet>
       <NewsApp
-        articles={articles}
-        category={category}
         query={query}
-        status={status}
+        darkMode={darkMode}
         setQuery={handleSearch}
+        toggleDarkMode={handleToggleDarkMode}
         setCategory={(category: string) => dispatch(setCategory(category))}
         fetchNewsAsync={fetchNewsAsync}
-        theme={theme}
-        toggleTheme={toggleTheme}
       />
-    </DarkModeProvider>
+    </>
   );
 };
 

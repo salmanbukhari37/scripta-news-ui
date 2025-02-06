@@ -1,7 +1,7 @@
 import React from "react";
 import { FiMenu } from "react-icons/fi";
 import newsPaper from "../../assets/newspaper.png";
-import { Page } from "enums/page.enum";
+import { Page } from "dto/enums/page.enum";
 
 interface HeaderTitleAndLogoProps {
   toggleSidebar: () => void;
