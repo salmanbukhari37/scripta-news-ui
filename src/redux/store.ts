@@ -1,10 +1,14 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import newsReducer from "./reducers/newsSlice";
 import themeReducer from "./reducers/themeSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import newYorkTimesSlice from "./reducers/newYorkTimesSlice";
+import generalReducer from "./reducers/generalSlice";
 
 export const store = configureStore({
   reducer: {
+    general: generalReducer,
+    newYorkTimes: newYorkTimesSlice,
     news: newsReducer,
     theme: themeReducer,
   },
@@ -21,4 +25,5 @@ export type AppThunk<ReturnType = void> = ThunkAction<
 >;
 
 export const useAppDispatch: () => AppDispatch = useDispatch;
-export const useAppSelector = useSelector<RootState>;
+export const useAppSelector: TypedUseSelectorHook<RootState> =
+  useSelector<RootState>;

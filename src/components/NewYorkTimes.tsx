@@ -1,19 +1,19 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { RootState, useAppDispatch, useAppSelector } from "../redux/store";
-import useArticleFilter from "../hooks/useNewsArticleFilter";
+import useNewYorkTimesArticleFilter from "../hooks/useNewYorkTimesArticleFilter";
 import Layout from "./layout/Layout";
 import ArticleContent from "./common/ArticleContent";
 import TrendingArticles from "./common/TrendingArticles";
 import { IAppThemeState } from "dto/interfaces";
-import { fetchNews, setQuery } from "../redux/reducers/newsSlice";
+import { setQuery } from "../redux/reducers/newsSlice";
 import { debounce } from "lodash";
-import { setIsCategory } from "../redux/reducers/themeSlice";
+import { fetchNYTArticles } from "../redux/reducers/newYorkTimesSlice";
 
-export default function NewsApp() {
+export default function NewYorkTimes() {
   const dispatch = useAppDispatch();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { selectedSources, selectedAuthors, status, query }: any =
-    useAppSelector((state: any) => state.news);
+    useAppSelector((state: any) => state.newYorkTimes);
 
   const { category }: any = useAppSelector((state: any) => state.general);
 
@@ -23,14 +23,13 @@ export default function NewsApp() {
 
   const [searchTerm, setSearchTerm] = useState(query);
 
-  const fetchNewsAsync = useCallback(() => {
-    dispatch(fetchNews({ country: "us", category, query }));
-    dispatch(setIsCategory(true));
+  const fetchNewYorkTimesAsync = useCallback(() => {
+    dispatch(fetchNYTArticles({ query, category }));
   }, [dispatch, category, query]);
 
   useEffect(() => {
-    fetchNewsAsync();
-  }, [fetchNewsAsync]);
+    fetchNewYorkTimesAsync();
+  }, [fetchNewYorkTimesAsync]);
 
   const debouncedSetQuery = useMemo(
     () => debounce((value: string) => dispatch(setQuery(value)), 500),
@@ -56,7 +55,7 @@ export default function NewsApp() {
     setSelectedSourcesHandler,
     setSelectedAuthorsHandler,
     filteredArticles,
-  } = useArticleFilter();
+  } = useNewYorkTimesArticleFilter();
 
   const handleSourceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const source = event.target.value;
@@ -74,6 +73,17 @@ export default function NewsApp() {
     setSelectedAuthorsHandler(updatedAuthors);
   };
 
+  const updatedArticles = filteredArticles?.map((article: any) => {
+    const imageUrl = article?.media?.[0]?.["media-metadata"]?.[2]?.url;
+    const description = article?.abstract;
+
+    return {
+      ...article,
+      description,
+      urlToImage: imageUrl || article?.urlToImage,
+    };
+  });
+
   return (
     <Layout
       handleSearch={handleSearch}
@@ -86,14 +96,13 @@ export default function NewsApp() {
       handleAuthorChange={handleAuthorChange}
       selectedAuthors={selectedAuthors}
       selectedSources={selectedSources}
-      isCategory={false}
     >
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="sm:col-span-2 lg:col-span-3 order-2 lg:order-none">
-          <ArticleContent articles={filteredArticles} status={status} />
+          <ArticleContent articles={updatedArticles} status={status} />
         </div>
         <div className="sm:col-span-2 lg:col-span-1 order-1 lg:order-none h-auto sm:h-screen lg:sticky lg:top-0">
-          <TrendingArticles articles={filteredArticles} status={status} />
+          <TrendingArticles articles={updatedArticles} status={status} />
         </div>
       </div>
     </Layout>

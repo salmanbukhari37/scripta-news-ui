@@ -1,42 +1,27 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-import { IArticle, NewsState, ISource } from "dto/interfaces";
+import { IArticle, NewsState } from "dto/interfaces";
 
-const API_KEY = "daa583cfc99e4292ad001a99e6762d16";
-const BASE_URL = "https://newsapi.org/v2";
+const NYT_API_KEY = "mIpBZ2EVpYw4tUiVZGwu8w6MAddAgdJM";
+const NYT_BASE_URL =
+  "https://api.nytimes.com/svc/mostpopular/v2/emailed/7.json";
 
-export const fetchNews = createAsyncThunk<
+export const fetchNYTArticles = createAsyncThunk<
   IArticle[],
-  { country?: string; category: string; query: string; source?: string }
->("news/fetchNews", async ({ country, category, query, source }: any) => {
-  const response = await axios.get(`${BASE_URL}/top-headlines`, {
+  { query: string; page?: number; category?: string }
+>("news/fetchNYTArticles", async ({ query, category }: any) => {
+  const response = await axios.get(NYT_BASE_URL, {
     params: {
-      country,
-      category,
-      q: query,
-      sources: source,
-      apiKey: API_KEY,
+      "api-key": NYT_API_KEY,
     },
   });
-  return response.data.articles;
+  return response.data.results;
 });
 
-export const fetchSources = createAsyncThunk<ISource[], string>(
-  "news/fetchSources",
-  async (country: string) => {
-    const response = await axios.get(`${BASE_URL}/top-headlines/sources`, {
-      params: {
-        country,
-        apiKey: API_KEY,
-      },
-    });
-    return response.data.sources;
-  }
-);
-
+// Initial state for New York Times
 const initialState: NewsState = {
-  categories: ["Technology", "Business", "Sports", "Health", "Science"],
   articles: [],
+  nytArticles: [],
   selectedSources: [],
   selectedAuthors: [],
   sources: [],
@@ -49,8 +34,8 @@ const initialState: NewsState = {
   isArticlesExpanded: false,
 };
 
-const newsSlice = createSlice({
-  name: "news",
+const newYorkTimesSlice = createSlice({
+  name: "newYorkTimes",
   initialState,
   reducers: {
     setCategory: (state: NewsState, action: PayloadAction<string>) => {
@@ -79,33 +64,18 @@ const newsSlice = createSlice({
   },
   extraReducers: (builder: any) => {
     builder
-      .addCase(fetchNews.pending, (state: NewsState) => {
+      .addCase(fetchNYTArticles.pending, (state: NewsState) => {
         state.status = "loading";
       })
       .addCase(
-        fetchNews.fulfilled,
+        fetchNYTArticles.fulfilled,
         (state: NewsState, action: PayloadAction<any>) => {
           state.status = "succeeded";
           state.articles = action.payload;
         }
       )
-      .addCase(fetchNews.rejected, (state: NewsState) => {
+      .addCase(fetchNYTArticles.rejected, (state: NewsState) => {
         state.status = "failed";
-      });
-
-    builder
-      .addCase(fetchSources.pending, (state: NewsState) => {
-        state.sourcesStatus = "loading";
-      })
-      .addCase(
-        fetchSources.fulfilled,
-        (state: NewsState, action: PayloadAction<any>) => {
-          state.sourcesStatus = "succeeded";
-          state.sources = action.payload;
-        }
-      )
-      .addCase(fetchSources.rejected, (state: NewsState) => {
-        state.sourcesStatus = "failed";
       });
   },
 });
@@ -118,5 +88,6 @@ export const {
   toggleArticlesExpanded,
   setSelectedSources,
   setSelectedAuthors,
-} = newsSlice.actions;
-export default newsSlice.reducer;
+} = newYorkTimesSlice.actions;
+
+export default newYorkTimesSlice.reducer;

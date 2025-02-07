@@ -1,4 +1,4 @@
-export interface Article {
+export interface IArticle {
   source: { name: string };
   author: string;
   title: string;

@@ -1,11 +1,19 @@
 import React from "react";
 import { ITrendingArticles } from "dto/interfaces";
+import TrendingArticlesSkeleton from "./skeleton/TrendingArticlesSkeleton";
 
-const TrendingArticles: React.FC<ITrendingArticles> = ({ articles }) => {
+const TrendingArticles: React.FC<ITrendingArticles> = ({
+  articles,
+  status,
+}) => {
+  if (status === "loading") {
+    return <TrendingArticlesSkeleton />;
+  }
+
   return (
     <aside className="space-y-4 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md sticky top-0 z-10">
       <h2 className="text-lg font-semibold mb-4">Trending Articles</h2>
-      {articles.slice(0, 5).map((article, index) => (
+      {articles?.slice(0, 5).map((article, index) => (
         <div key={index} className="flex items-start gap-4">
           <img
             src={article.urlToImage || "https://via.placeholder.com/100"}
