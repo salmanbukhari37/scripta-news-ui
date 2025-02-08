@@ -9,7 +9,7 @@ interface Article {
 }
 
 interface ArticleContentProps {
-  status: "loading" | "failed" | "succeeded";
+  status: "loading" | "failed" | "succeeded" | string;
   articles: Article[];
 }
 
@@ -17,17 +17,18 @@ const ArticleContent: React.FC<ArticleContentProps> = ({
   status,
   articles,
 }: ArticleContentProps) => {
-  const placeHolderUrl = "https://via.placeholder.com/300";
+  const placeHolderUrl = "";
   return (
     <section className="lg:col-span-3">
       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2">
         {status === "loading" &&
-          [...Array(articles?.length)]?.map((_, index) => (
+          [...Array(8)]?.map((_, index) => (
             <ArticleSkeleton key={index} index={index} />
           ))}
         {status === "failed" && (
-          <p className="text-center text-lg text-red-500">
-            Failed to load news. Try again later.
+          <p className="text-center text-lg text-red-600 font-semibold">
+            Oops! Something went wrong. We couldn't load the news at the moment.
+            Please try again later.
           </p>
         )}
         {status === "succeeded" &&

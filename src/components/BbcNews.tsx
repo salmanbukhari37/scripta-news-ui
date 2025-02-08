@@ -3,7 +3,7 @@ import Layout from "./layout/Layout";
 import ArticleContent from "./common/ArticleContent";
 import TrendingArticles from "./common/TrendingArticles";
 
-export default function NewYorkTimes() {
+export default function BbcNews() {
   const {
     handleSearch,
     searchTerm,

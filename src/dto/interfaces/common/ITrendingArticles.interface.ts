@@ -6,5 +6,5 @@ interface Article {
 
 export interface ITrendingArticles {
   articles: Article[];
-  status: "loading" | "failed" | "succeeded";
+  status: "loading" | "failed" | "succeeded" | string;
 }

@@ -4,5 +4,5 @@ export interface IAppThemeState {
 
 export interface IAppNewsState {
   category: string;
-  query: string;
+  query?: string;
 }

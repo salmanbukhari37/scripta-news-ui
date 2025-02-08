@@ -1,10 +1,18 @@
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAppSelector, useAppDispatch } from "../redux/store";
+import { fetchNews, setQuery } from "../redux/reducers/newsSlice";
 import {
+  resetDates,
   setSelectedAuthors,
   setSelectedSources,
-} from "../redux/reducers/newsSlice";
-import { useCallback, useEffect } from "react";
-import { updateCategories, setCategory } from "../redux/reducers/generalSlice";
+  updateAuthorsAndSources,
+} from "../redux/reducers/generalSlice";
+import {
+  updateCategories,
+  setCategory,
+  setIsCategory,
+} from "../redux/reducers/generalSlice";
+import { debounce } from "lodash";
 
 interface Article {
   source: {
@@ -21,38 +29,70 @@ interface NewsState {
   selectedAuthors: string[];
   articles: Article[];
   category: string;
+  query: string;
+  status: "loading" | "succeeded" | "failed" | string;
 }
 
 const useNewsArticleFilter = () => {
   const dispatch = useAppDispatch();
-  const { selectedSources, selectedAuthors, articles, category }: NewsState =
-    useAppSelector((state: { news: NewsState }) => state.news);
+  const categories = [
+    {
+      key: "technology",
+      title: "Technology",
+    },
+    {
+      key: "business",
+      title: "Business",
+    },
+    {
+      key: "sports",
+      title: "Sports",
+    },
+    {
+      key: "health",
+      title: "Health",
+    },
+    {
+      key: "science",
+      title: "Science",
+    },
+  ];
+
+  const { articles, query, status }: NewsState = useAppSelector(
+    (state: { news: NewsState }) => state.news
+  );
+
+  const {
+    category,
+    selectedSources,
+    selectedAuthors,
+    startDate,
+    endDate,
+  }: any = useAppSelector((state: any) => state.general);
+
+  const [searchTerm, setSearchTerm] = useState(query);
+
+  const fetchNewsAsync = useCallback(() => {
+    dispatch(fetchNews({ country: "us", category, query }));
+    dispatch(setIsCategory(true));
+  }, [dispatch, category, query]);
+
+  useEffect(() => {
+    fetchNewsAsync();
+  }, [fetchNewsAsync]);
+
+  const debouncedSetQuery = useMemo(
+    () => debounce((value: string) => dispatch(setQuery(value)), 500),
+    [dispatch]
+  );
+
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+    debouncedSetQuery(value);
+  };
 
   const updateCategory = () => {
-    dispatch(
-      updateCategories([
-        {
-          key: "technology",
-          title: "Technology",
-        },
-        {
-          key: "business",
-          title: "Business",
-        },
-        {
-          key: "sports",
-          title: "Sports",
-        },
-        {
-          key: "health",
-          title: "Health",
-        },
-        {
-          key: "science",
-          title: "Science",
-        },
-      ])
-    );
+    dispatch(updateCategories(categories));
   };
 
   const setCategoryValue = () => {
@@ -74,6 +114,22 @@ const useNewsArticleFilter = () => {
     [dispatch]
   );
 
+  const handleSourceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const source = event.target.value;
+    const updatedSources = selectedSources.includes(source)
+      ? selectedSources.filter((item: any) => item !== source)
+      : [...selectedSources, source];
+    setSelectedSourcesHandler(updatedSources);
+  };
+
+  const handleAuthorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const author = event.target.value;
+    const updatedAuthors = selectedAuthors.includes(author)
+      ? selectedAuthors.filter((item: any) => item !== author)
+      : [...selectedAuthors, author];
+    setSelectedAuthorsHandler(updatedAuthors);
+  };
+
   const filteredArticles = articles
     .filter((article) =>
       selectedSources.length
@@ -84,29 +140,43 @@ const useNewsArticleFilter = () => {
       selectedAuthors.length
         ? selectedAuthors.includes(article.author ?? "")
         : true
-    );
-
-  const authors = Array.from(
-    new Set(
-      articles.map((article) => article.author).filter((author) => author)
     )
-  );
+    .filter((article: any) => {
+      if (startDate && article.publishedAt) {
+        const articleDate = new Date(article.publishedAt);
+        const start = new Date(startDate);
+        if (articleDate < start) {
+          return false;
+        }
+      }
+      if (endDate && article.publishedAt) {
+        const articleDate = new Date(article.publishedAt);
+        const end = new Date(endDate);
+        if (articleDate > end) {
+          return false;
+        }
+      }
+      return true;
+    });
 
-  const sources = Array.from(
-    new Set(articles.map((article) => article.source.name))
-  );
+  const resetDatesHandler = () => {
+    dispatch(resetDates());
+  };
 
   useEffect(() => {
     setSelectedSourcesHandler([]);
     setSelectedAuthorsHandler([]);
-  }, [category, setSelectedAuthorsHandler, setSelectedSourcesHandler]);
+    dispatch(updateAuthorsAndSources({ articles }));
+    resetDatesHandler();
+  }, [setSelectedAuthorsHandler, setSelectedSourcesHandler, articles]);
 
   return {
-    authors,
-    sources,
     filteredArticles,
-    setSelectedAuthorsHandler,
-    setSelectedSourcesHandler,
+    handleSearch,
+    handleSourceChange,
+    handleAuthorChange,
+    searchTerm,
+    status,
   };
 };
 

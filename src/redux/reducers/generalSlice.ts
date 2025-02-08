@@ -10,6 +10,13 @@ interface ThemeState {
   darkMode: boolean;
   isCategory: boolean;
   category: string;
+  sidebarOpen: boolean;
+  selectedAuthors: string[];
+  selectedSources: string[];
+  sourcesFilterList: string[];
+  authorsFilterList: string[];
+  startDate: string | null;
+  endDate: string | null;
 }
 
 const initialState: ThemeState = {
@@ -35,9 +42,16 @@ const initialState: ThemeState = {
       title: "Science",
     },
   ],
+  selectedAuthors: [],
+  selectedSources: [],
+  authorsFilterList: [],
+  sourcesFilterList: [],
+  startDate: null,
+  endDate: null,
   darkMode: false,
   isCategory: true,
   category: "",
+  sidebarOpen: false,
 };
 
 const generalSlice = createSlice({
@@ -59,9 +73,64 @@ const generalSlice = createSlice({
     ) => {
       state.categories = action.payload;
     },
+    toggleSidebar: (state: ThemeState) => {
+      state.sidebarOpen = !state.sidebarOpen;
+    },
+    setSelectedAuthors: (
+      state: ThemeState,
+      action: PayloadAction<string[]>
+    ) => {
+      state.selectedAuthors = action.payload;
+    },
+    setSelectedSources: (
+      state: ThemeState,
+      action: PayloadAction<string[]>
+    ) => {
+      state.selectedSources = action.payload;
+    },
+    updateAuthorsAndSources: (
+      state: ThemeState,
+      action: PayloadAction<{ articles: any[] }>
+    ) => {
+      const articles = action.payload.articles;
+
+      const authors = Array.from(
+        new Set(
+          articles.map((article) => article.author).filter((author) => author)
+        )
+      );
+
+      const sources = Array.from(
+        new Set(articles.map((article) => article.source.name))
+      );
+
+      state.authorsFilterList = authors;
+      state.sourcesFilterList = sources;
+    },
+    setStartDate: (state: ThemeState, action: PayloadAction<string>) => {
+      state.startDate = action.payload;
+    },
+    setEndDate: (state: ThemeState, action: PayloadAction<string>) => {
+      state.endDate = action.payload;
+    },
+    resetDates: (state: ThemeState) => {
+      state.startDate = null;
+      state.endDate = null;
+    },
   },
 });
 
-export const { toggleDarkMode, setIsCategory, updateCategories, setCategory } =
-  generalSlice.actions;
+export const {
+  toggleDarkMode,
+  setIsCategory,
+  updateCategories,
+  setCategory,
+  toggleSidebar,
+  setSelectedAuthors,
+  setSelectedSources,
+  updateAuthorsAndSources,
+  setStartDate,
+  setEndDate,
+  resetDates,
+} = generalSlice.actions;
 export default generalSlice.reducer;

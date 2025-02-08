@@ -1,3 +1,3 @@
 export enum Page {
-  AppName = "News App",
+  AppName = "News Aggregator",
 }

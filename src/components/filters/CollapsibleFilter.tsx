@@ -41,7 +41,7 @@ const CollapsibleFilter: React.FC<CollapsibleFilterProps> = ({
                 type="checkbox"
                 id={item}
                 value={item}
-                checked={selectedItems.includes(item)}
+                checked={selectedItems?.includes(item)}
                 onChange={handleItemChange}
                 className="mr-2 rounded border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 cursor-pointer"
               />
