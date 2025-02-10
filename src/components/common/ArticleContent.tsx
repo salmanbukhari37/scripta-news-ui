@@ -17,7 +17,7 @@ const ArticleContent: React.FC<ArticleContentProps> = ({
   status,
   articles,
 }: ArticleContentProps) => {
-  const placeHolderUrl = "";
+  const placeHolderUrl = "https://picsum.photos/400/600";
   return (
     <section className="lg:col-span-3">
       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2">

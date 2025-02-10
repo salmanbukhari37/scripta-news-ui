@@ -61,7 +61,7 @@ Switch between light and night modes to suit your preference.
 - **Frontend**: React.js, TypeScript, Tailwind CSS
 - **Routing**: React Router
 - **State Management**: Redux Toolkit
-- **API**: News API integration to fetch news data from various sources
+- **API**: News API, New York Times and BBC Apis integration to fetch news data from various sources
 - **Lazy Loading**: React.lazy for optimizing loading performance
 - **SEO**: React Helmet for dynamic page titles and metadata
 - **Routing**: React Router for dynamic navigation

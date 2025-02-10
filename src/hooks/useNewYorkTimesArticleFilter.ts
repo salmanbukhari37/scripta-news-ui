@@ -122,8 +122,13 @@ const useNewYorkTimesArticleFilter = () => {
   }));
 
   const updatedArticles = filteredArticles?.map((article: any) => {
-    const imageUrl =
-      process.env.REACT_APP_API_UR + article?.multimedia?.[0]?.url;
+    let imageUrl;
+    if (article?.multimedia?.[0]?.url) {
+      imageUrl = process.env.REACT_APP_API_UR + article?.multimedia?.[0]?.url;
+    } else {
+      imageUrl = "https://picsum.photos/400/600";
+    }
+
     const description = article?.abstract;
 
     return {
