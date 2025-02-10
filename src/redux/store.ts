@@ -4,9 +4,11 @@ import themeReducer from "./reducers/themeSlice";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import newYorkTimesSlice from "./reducers/newYorkTimesSlice";
 import generalReducer from "./reducers/generalSlice";
+import bbcNewsReducer from "./reducers/bbcNewsSlice";
 
 export const store = configureStore({
   reducer: {
+    bbcNews: bbcNewsReducer,
     general: generalReducer,
     newYorkTimes: newYorkTimesSlice,
     news: newsReducer,

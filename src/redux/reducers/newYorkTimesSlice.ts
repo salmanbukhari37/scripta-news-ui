@@ -3,10 +3,7 @@ import axios from "axios";
 import { IArticle, NewsState } from "dto/interfaces";
 
 const NYT_API_KEY = "mIpBZ2EVpYw4tUiVZGwu8w6MAddAgdJM";
-const NYT_BASE_URL =
-  "https://api.nytimes.com/svc/mostpopular/v2/emailed/7.json";
-
-// const NYT_BASE_URL = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
+const NYT_BASE_URL = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
 
 export const fetchNYTArticles = createAsyncThunk<
   IArticle[],
@@ -15,12 +12,12 @@ export const fetchNYTArticles = createAsyncThunk<
   const response = await axios.get(NYT_BASE_URL, {
     params: {
       "api-key": NYT_API_KEY,
+      q: query,
     },
   });
-  return response.data.results;
+  return response.data.response?.docs;
 });
 
-// Initial state for New York Times
 const initialState: NewsState = {
   articles: [],
   nytArticles: [],

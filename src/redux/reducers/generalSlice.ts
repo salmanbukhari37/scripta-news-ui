@@ -5,7 +5,7 @@ interface Category {
   title: string;
 }
 
-interface ThemeState {
+export interface GeneralState {
   categories: Category[];
   darkMode: boolean;
   isCategory: boolean;
@@ -19,7 +19,7 @@ interface ThemeState {
   endDate: string | null;
 }
 
-const initialState: ThemeState = {
+const initialState: GeneralState = {
   categories: [
     {
       key: "technology",
@@ -55,65 +55,72 @@ const initialState: ThemeState = {
 };
 
 const generalSlice = createSlice({
-  name: "theme",
+  name: "general",
   initialState,
   reducers: {
-    setCategory: (state: any, action: PayloadAction<string>) => {
+    setCategory: (state: GeneralState, action: PayloadAction<string>) => {
       state.category = action.payload;
     },
-    toggleDarkMode: (state: ThemeState) => {
+    toggleDarkMode: (state: GeneralState) => {
       state.darkMode = !state.darkMode;
     },
-    setIsCategory: (state: ThemeState, action) => {
+    setIsCategory: (state: GeneralState, action: PayloadAction<boolean>) => {
       state.isCategory = action.payload;
     },
     updateCategories: (
-      state: ThemeState,
+      state: GeneralState,
       action: PayloadAction<Category[]>
     ) => {
       state.categories = action.payload;
     },
-    toggleSidebar: (state: ThemeState) => {
+    toggleSidebar: (state: GeneralState) => {
       state.sidebarOpen = !state.sidebarOpen;
     },
     setSelectedAuthors: (
-      state: ThemeState,
+      state: GeneralState,
       action: PayloadAction<string[]>
     ) => {
       state.selectedAuthors = action.payload;
     },
     setSelectedSources: (
-      state: ThemeState,
+      state: GeneralState,
       action: PayloadAction<string[]>
     ) => {
       state.selectedSources = action.payload;
     },
     updateAuthorsAndSources: (
-      state: ThemeState,
-      action: PayloadAction<{ articles: any[] }>
+      state: GeneralState,
+      action: PayloadAction<{
+        articles: {
+          byline?: { original: string | null };
+          source: { name: string };
+        }[];
+      }>
     ) => {
       const articles = action.payload.articles;
 
-      const authors = Array.from(
+      const authors: any = Array?.from(
         new Set(
-          articles.map((article) => article.author).filter((author) => author)
+          articles
+            .map((article) => article?.byline?.original)
+            .filter((author) => author)
         )
       );
 
       const sources = Array.from(
-        new Set(articles.map((article) => article.source.name))
+        new Set(articles?.map((article) => article.source.name))
       );
 
       state.authorsFilterList = authors;
       state.sourcesFilterList = sources;
     },
-    setStartDate: (state: ThemeState, action: PayloadAction<string>) => {
+    setStartDate: (state: GeneralState, action: PayloadAction<string>) => {
       state.startDate = action.payload;
     },
-    setEndDate: (state: ThemeState, action: PayloadAction<string>) => {
+    setEndDate: (state: GeneralState, action: PayloadAction<string>) => {
       state.endDate = action.payload;
     },
-    resetDates: (state: ThemeState) => {
+    resetDates: (state: GeneralState) => {
       state.startDate = null;
       state.endDate = null;
     },

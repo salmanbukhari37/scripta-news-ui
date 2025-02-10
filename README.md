@@ -1,46 +1,99 @@
-# Getting Started with Create React App
+# Innoscripta News Aggregator
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Welcome to the News Aggregator Website! This is a modern web application that aggregates news from various sources and categories, such as Technology, Business, Sports, Health, Science, and more. Users can view news articles, filter by category, and enjoy a smooth and responsive user interface.
 
-## Available Scripts
+### Browse News
 
-In the project directory, you can run:
+The home page will display trending articles. You can filter news by categories such as Technology, Business, Sports, and more.
 
-### `npm start`
+### Search
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Use the search bar to look for specific news articles by entering keywords.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Light/Dark Mode
 
-### `npm test`
+Switch between light and dark modes to suit your preference.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Table of Contents
 
-### `npm run build`
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+- [Usage](#usage)
+- [Scripts](#scripts)
+- [Contributing](#contributing)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Features
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- **Dynamic News Feed**: Fetch and display news from multiple sources like BBC, New York Times, and more.
+- **Category-Based News**: Filter news by categories such as Technology, Business, Sports, Health, etc.
+- **Search Functionality**: Search for specific news articles by keyword.
+- **Light/Dark Mode**: Toggle between light and dark modes for a better reading experience.
+- **Responsive Design**: The app is fully responsive and works seamlessly across devices, from mobile phones to desktops.
+- **Lazy Loading**: News components are lazy-loaded for improved performance and faster load times.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Tech Stack
 
-### `npm run eject`
+- **Frontend**: React.js, TypeScript, Tailwind CSS
+- **Routing**: React Router
+- **State Management**: Redux Toolkit
+- **API**: News API integration to fetch news data from various sources
+- **Lazy Loading**: React.lazy for optimizing loading performance
+- **SEO**: React Helmet for dynamic page titles and metadata
+- **Routing**: React Router for dynamic navigation
+- **Others**: React Suspense, Axios for HTTP requests
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Installation
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 1. Clone the Repository
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```bash
+git clone https://github.com/salmanbukhari37/scripta-news-ui.git
+cd scripta-news-ui.git
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Usage
 
-## Learn More
+`Note`: Rename the `.local.env` file to `.env`.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Install the packages
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+#### Npm
+
+```
+npm install
+```
+
+### Run the Project
+
+#### Npm
+
+```
+npm run start
+```
+
+### Building for Production
+
+To create a production build of your application, run:
+
+#### NPM
+
+```
+npm run build
+```
+
+The build artifacts will be stored in the `build` directory.
+
+## Scripts
+
+This project includes the following scripts:
+
+- `start:` Starts the development server.
+- `build:` Builds the app for production.
+- `test:` Runs the test suite.
+- `eject:` Removes the single build dependency from your project.
+- `docker-start:` start docker-start script in `package.json`, which uses `docker-compose up --build` to start the app
+
+## Contributing
+
+Contributions are welcome! If you'd like to contribute, please fork the repository and submit a pull request.

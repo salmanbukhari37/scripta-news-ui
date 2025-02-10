@@ -8,8 +8,7 @@ import {
 } from "../../redux/reducers/newsSlice";
 import SearchAndThemeToggle from "../common/SearchAndThemeToggle";
 import { setStartDate, setEndDate } from "../../redux/reducers/generalSlice";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "../common/DatePicker";
 
 const LeftSidebar: React.FC<any> = ({
   handleSearch,
@@ -21,7 +20,7 @@ const LeftSidebar: React.FC<any> = ({
   const { isSourcesExpanded, isArticlesExpanded }: any = useAppSelector(
     (state: any) => state.news
   );
-  const { isCategory }: any = useAppSelector((state: any) => state.theme);
+  const { isCategory }: any = useAppSelector((state: any) => state.general);
   const {
     selectedAuthors,
     selectedSources,
@@ -43,9 +42,9 @@ const LeftSidebar: React.FC<any> = ({
     type: "startDate" | "endDate"
   ) => {
     if (type === "startDate" && date) {
-      dispatch(setStartDate(date.toISOString().split("T")[0])); // Convert to 'YYYY-MM-DD' format
+      dispatch(setStartDate(date.toISOString().split("T")[0]));
     } else if (type === "endDate" && date) {
-      dispatch(setEndDate(date.toISOString().split("T")[0])); // Convert to 'YYYY-MM-DD' format
+      dispatch(setEndDate(date.toISOString().split("T")[0]));
     }
   };
 
@@ -74,41 +73,11 @@ const LeftSidebar: React.FC<any> = ({
         isExpanded={isArticlesExpanded}
       />
       {/* Date Filter */}
-      <div className="space-y-2">
-        <h3 className="text-lg font-semibold mb-4 flex items-center">
-          Select Start/End Date
-        </h3>
-        <div>
-          <label
-            htmlFor="startDate"
-            className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-          >
-            Start Date
-          </label>
-          <DatePicker
-            selected={startDate ? new Date(startDate) : null}
-            onChange={(date) => handleDateChange(date, "startDate")}
-            dateFormat="yyyy-MM-dd"
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white dark:border-gray-600"
-            placeholderText="Select a start date"
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="endDate"
-            className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-          >
-            End Date
-          </label>
-          <DatePicker
-            selected={endDate ? new Date(endDate) : null}
-            onChange={(date) => handleDateChange(date, "endDate")}
-            dateFormat="yyyy-MM-dd"
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white dark:border-gray-600"
-            placeholderText="Select an end date"
-          />
-        </div>
-      </div>
+      <DatePicker
+        startDate={startDate}
+        endDate={endDate}
+        handleDateChange={handleDateChange}
+      />
     </div>
   );
 };

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAppSelector, useAppDispatch } from "../redux/store";
 import { fetchNews, setQuery } from "../redux/reducers/newsSlice";
 import {
+  GeneralState,
   resetDates,
   setSelectedAuthors,
   setSelectedSources,
@@ -22,6 +23,7 @@ interface Article {
   urlToImage?: string;
   title?: string;
   url?: string;
+  publishedAt?: string;
 }
 
 interface NewsState {
@@ -33,29 +35,19 @@ interface NewsState {
   status: "loading" | "succeeded" | "failed" | string;
 }
 
+interface Category {
+  key: string;
+  title: string;
+}
+
 const useNewsArticleFilter = () => {
   const dispatch = useAppDispatch();
-  const categories = [
-    {
-      key: "technology",
-      title: "Technology",
-    },
-    {
-      key: "business",
-      title: "Business",
-    },
-    {
-      key: "sports",
-      title: "Sports",
-    },
-    {
-      key: "health",
-      title: "Health",
-    },
-    {
-      key: "science",
-      title: "Science",
-    },
+  const categories: Category[] = [
+    { key: "technology", title: "Technology" },
+    { key: "business", title: "Business" },
+    { key: "sports", title: "Sports" },
+    { key: "health", title: "Health" },
+    { key: "science", title: "Science" },
   ];
 
   const { articles, query, status }: NewsState = useAppSelector(
@@ -68,7 +60,9 @@ const useNewsArticleFilter = () => {
     selectedAuthors,
     startDate,
     endDate,
-  }: any = useAppSelector((state: any) => state.general);
+  }: GeneralState = useAppSelector(
+    (state: { general: GeneralState }) => state.general
+  );
 
   const [searchTerm, setSearchTerm] = useState(query);
 
@@ -117,7 +111,7 @@ const useNewsArticleFilter = () => {
   const handleSourceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const source = event.target.value;
     const updatedSources = selectedSources.includes(source)
-      ? selectedSources.filter((item: any) => item !== source)
+      ? selectedSources.filter((item: string) => item !== source)
       : [...selectedSources, source];
     setSelectedSourcesHandler(updatedSources);
   };
@@ -125,7 +119,7 @@ const useNewsArticleFilter = () => {
   const handleAuthorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const author = event.target.value;
     const updatedAuthors = selectedAuthors.includes(author)
-      ? selectedAuthors.filter((item: any) => item !== author)
+      ? selectedAuthors.filter((item: string) => item !== author)
       : [...selectedAuthors, author];
     setSelectedAuthorsHandler(updatedAuthors);
   };
@@ -141,7 +135,7 @@ const useNewsArticleFilter = () => {
         ? selectedAuthors.includes(article.author ?? "")
         : true
     )
-    .filter((article: any) => {
+    .filter((article: Article) => {
       if (startDate && article.publishedAt) {
         const articleDate = new Date(article.publishedAt);
         const start = new Date(startDate);
@@ -177,6 +171,7 @@ const useNewsArticleFilter = () => {
     handleAuthorChange,
     searchTerm,
     status,
+    category,
   };
 };
 

@@ -8,16 +8,17 @@ const BASE_URL = "https://newsapi.org/v2";
 export const fetchNews = createAsyncThunk<
   IArticle[],
   { country?: string; category: string; query: string; source?: string }
->("news/fetchNews", async ({ country, category, query, source }: any) => {
-  const response = await axios.get(`${BASE_URL}/top-headlines`, {
-    params: {
-      country,
-      category,
-      q: query,
-      sources: source,
-      apiKey: API_KEY,
-    },
-  });
+>("news/fetchNews", async ({ query, source }: any) => {
+  const response = await axios.get(
+    `${BASE_URL}/top-headlines?sources=bbc-news`,
+    {
+      params: {
+        q: query,
+        sources: source,
+        apiKey: API_KEY,
+      },
+    }
+  );
   return response.data.articles;
 });
 
@@ -37,7 +38,7 @@ const initialState: NewsState = {
 };
 
 const newsSlice = createSlice({
-  name: "news",
+  name: "bbcNews",
   initialState,
   reducers: {
     setCategory: (state: NewsState, action: PayloadAction<string>) => {
