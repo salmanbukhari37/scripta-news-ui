@@ -10,9 +10,33 @@ The home page will display trending articles. You can filter news by categories 
 
 Use the search bar to look for specific news articles by entering keywords.
 
-### Light/Dark Mode
+### Light/Night Mode
 
-Switch between light and dark modes to suit your preference.
+Switch between light and night modes to suit your preference.
+
+### News Page
+
+![News Page](src/assets/app-images/News-Page.png)
+
+#### Night Mode
+
+![News Page - Dark](src/assets/app-images/News-Page-Dark.png)
+
+### New York Times
+
+![New York Times](src/assets/app-images/NYC-Page.png)
+
+#### Night Mode
+
+![New York Times - Dark](src/assets/app-images/NYC-Page-Dark.png)
+
+### BBC
+
+![BBC](src/assets/app-images/BBC-Page.png)
+
+#### Night Mode
+
+![BBC Dark](src/assets/app-images/BBC-Page-Dark.png)
 
 ## Table of Contents
 
