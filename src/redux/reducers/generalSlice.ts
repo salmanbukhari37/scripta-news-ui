@@ -92,7 +92,7 @@ const generalSlice = createSlice({
       state: GeneralState,
       action: PayloadAction<{
         articles: {
-          byline?: { original: string | null };
+          author?: any;
           source: { name: string };
         }[];
       }>
@@ -102,8 +102,8 @@ const generalSlice = createSlice({
       const authors: any = Array?.from(
         new Set(
           articles
-            .map((article) => article?.byline?.original)
-            .filter((author) => author)
+            .map((article: any) => article.author)
+            .filter((author: string) => author)
         )
       );
 

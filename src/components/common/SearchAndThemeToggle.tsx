@@ -20,6 +20,7 @@ const SearchAndThemeToggle: React.FC<any> = ({
     <>
       <div className={`${classes} items-center mb-4 justify-between space-x-4`}>
         <DarkModeSwitch
+          data-testid="dark-mode-toggle"
           checked={darkMode}
           sunColor="#FFCC00"
           moonColor="#A9B4C2"
@@ -29,6 +30,7 @@ const SearchAndThemeToggle: React.FC<any> = ({
 
         <div className="relative">
           <input
+            data-testid="searchbar-id"
             type="text"
             placeholder="Search news..."
             className="border p-3 pl-12 pr-4 w-full rounded-lg dark:bg-gray-800 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 shadow-md"

@@ -8,6 +8,7 @@ interface CollapsibleFilterProps {
   handleItemChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   toggleExpand: () => void;
   isExpanded: boolean;
+  key?: number;
 }
 
 const CollapsibleFilter: React.FC<CollapsibleFilterProps> = ({
@@ -17,11 +18,13 @@ const CollapsibleFilter: React.FC<CollapsibleFilterProps> = ({
   handleItemChange,
   toggleExpand,
   isExpanded,
+  key,
 }) => {
   return (
-    <div>
+    <div data-testid={`expand-icon-${key}`} key={key}>
       <h3 className="text-lg font-semibold mb-4 flex items-center">
         <button
+          role={"button"}
           onClick={toggleExpand}
           className="dark:text-gray-300 flex items-center space-x-2"
         >

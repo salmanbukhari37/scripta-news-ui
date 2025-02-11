@@ -47,6 +47,7 @@ const useBbcNewsArticleFilter = () => {
     selectedAuthors,
     startDate,
     endDate,
+    categories,
   }: GeneralState = useAppSelector((state: RootState) => state.general);
 
   const [searchTerm, setSearchTerm] = useState(query);
@@ -70,18 +71,13 @@ const useBbcNewsArticleFilter = () => {
     debouncedSetQuery(value);
   };
 
-  const updateCategory = () => {
+  const updateCategory = useCallback(() => {
     dispatch(updateCategories([]));
-  };
+  }, [dispatch]);
 
-  const setCategoryValue = () => {
+  const setCategoryValue = useCallback(() => {
     dispatch(setCategory("technology"));
-  };
-
-  useEffect(() => {
-    updateCategory();
-    setCategoryValue();
-  }, []);
+  }, [dispatch]);
 
   const setSelectedAuthorsHandler = useCallback(
     (payload: string[]) => dispatch(setSelectedAuthors(payload)),
@@ -138,16 +134,35 @@ const useBbcNewsArticleFilter = () => {
       return true;
     });
 
-  const resetDatesHandler = () => {
+  const resetDatesHandler = useCallback(() => {
     dispatch(resetDates());
-  };
+  }, [dispatch]);
+
+  const updateAuthorsAndSourcesHandler = useCallback(() => {
+    dispatch(updateAuthorsAndSources({ articles }));
+  }, [dispatch, articles]);
+
+  useEffect(() => {
+    if (category !== "technology") {
+      setCategoryValue();
+    }
+    if (categories.length === 0) {
+      updateCategory();
+    }
+  }, [category, categories.length, setCategoryValue, updateCategory]);
 
   useEffect(() => {
     setSelectedSourcesHandler([]);
     setSelectedAuthorsHandler([]);
-    dispatch(updateAuthorsAndSources({ articles }));
+    updateAuthorsAndSourcesHandler();
     resetDatesHandler();
-  }, [setSelectedAuthorsHandler, setSelectedSourcesHandler, articles]);
+  }, [
+    setSelectedAuthorsHandler,
+    setSelectedSourcesHandler,
+    articles,
+    updateAuthorsAndSourcesHandler,
+    resetDatesHandler,
+  ]);
 
   return {
     filteredArticles,

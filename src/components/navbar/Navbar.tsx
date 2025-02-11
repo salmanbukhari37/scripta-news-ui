@@ -9,7 +9,10 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ handleSearch, searchTerm }) => {
   return (
-    <header className="bg-white dark:bg-gray-800 shadow-md p-4 mb-8 flex items-center justify-between">
+    <header
+      data-testid="navbar"
+      className="bg-white dark:bg-gray-800 shadow-md p-4 mb-8 flex items-center justify-between"
+    >
       <HeaderTitleAndLogo />
       <SearchAndThemeToggle
         handleSearch={handleSearch}

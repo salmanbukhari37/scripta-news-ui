@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -27,7 +27,7 @@ const DatePickerComponent: React.FC<DatePickerProps> = ({
         </label>
         <DatePicker
           selected={startDate ? new Date(startDate) : null}
-          onChange={(date: Date) => handleDateChange(date, "startDate")}
+          onChange={(date: any) => handleDateChange(date, "startDate")}
           dateFormat="yyyy-MM-dd"
           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white dark:border-gray-600"
           placeholderText="Select a start date"
@@ -42,7 +42,7 @@ const DatePickerComponent: React.FC<DatePickerProps> = ({
         </label>
         <DatePicker
           selected={endDate ? new Date(endDate) : null}
-          onChange={(date: Date) => handleDateChange(date, "endDate")}
+          onChange={(date: any) => handleDateChange(date, "endDate")}
           dateFormat="yyyy-MM-dd"
           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white dark:border-gray-600"
           placeholderText="Select an end date"

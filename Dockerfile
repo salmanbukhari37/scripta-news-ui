@@ -1,10 +1,10 @@
-FROM node:18-alpine
+FROM node:20-alpine
 
 # Set working directory
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-RUN npm install --frozen-lockfile
+RUN npm install 
 
 COPY . .
 

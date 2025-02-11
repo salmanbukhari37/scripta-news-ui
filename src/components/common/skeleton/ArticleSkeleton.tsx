@@ -7,6 +7,7 @@ interface ArticleSkeletonProps {
 const ArticleSkeleton: React.FC<ArticleSkeletonProps> = ({ index }) => {
   return (
     <div
+      role="presentation"
       key={index}
       className="p-5 bg-white dark:bg-gray-800 rounded-lg shadow-lg animate-pulse"
     >

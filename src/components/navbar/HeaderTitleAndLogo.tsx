@@ -11,48 +11,35 @@ const HeaderTitleAndLogo: React.FC<any> = () => {
     dispatch(toggleSidebar());
   };
 
+  const links = [
+    { to: "/news", label: "News" },
+    { to: "/nyt", label: "New York Times" },
+    { to: "/bbc-news", label: "BBC News" },
+  ];
+
   return (
     <>
       <button
         className="lg:hidden text-gray-800 dark:text-white"
         onClick={toggleSidebarDispatcher}
       >
-        <FiMenu size={24} />{" "}
+        <FiMenu size={24} />
       </button>
 
-      <nav className="flex  space-x-6">
-        <NavLink
-          to="/news"
-          className={({ isActive }) =>
-            isActive
-              ? "text-lg text-blue-600 dark:text-blue-400 font-semibold"
-              : "text-lg text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-          }
-        >
-          News
-        </NavLink>
-
-        <NavLink
-          to="/nyt"
-          className={({ isActive }) =>
-            isActive
-              ? "text-lg text-blue-600 dark:text-blue-400 font-semibold"
-              : "text-lg text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-          }
-        >
-          New York Times
-        </NavLink>
-
-        <NavLink
-          to="/bbc-news"
-          className={({ isActive }) =>
-            isActive
-              ? "text-lg text-blue-600 dark:text-blue-400 font-semibold"
-              : "text-lg text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-          }
-        >
-          BBC News
-        </NavLink>
+      <nav className="flex space-x-2 lg:space-x-6">
+        {links.map((link) => (
+          <NavLink
+            key={link.to}
+            to={link.to}
+            className={({ isActive }) =>
+              isActive
+                ? "text-lg text-blue-600 dark:text-blue-400 font-semibold"
+                : "text-lg text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+            }
+          >
+            {link.label}
+          </NavLink>
+        ))}
       </nav>
     </>
   );

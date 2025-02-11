@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-import { IArticle, NewsState, ISource } from "dto/interfaces";
+import { IArticle, NewsState } from "dto/interfaces";
 
 const API_KEY = "daa583cfc99e4292ad001a99e6762d16";
 const BASE_URL = "https://newsapi.org/v2";

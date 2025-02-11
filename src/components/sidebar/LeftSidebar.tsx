@@ -57,6 +57,7 @@ const LeftSidebar: React.FC<any> = ({
       />
       {isCategory && <Categories />}
       <CollapsibleFilter
+        key={1}
         title="Select News Source(s)"
         items={sourcesFilterList}
         selectedItems={selectedSources}
@@ -64,14 +65,17 @@ const LeftSidebar: React.FC<any> = ({
         toggleExpand={toggleFilterSources}
         isExpanded={isSourcesExpanded}
       />
-      <CollapsibleFilter
-        title="Select Author(s)"
-        items={authorsFilterList}
-        selectedItems={selectedAuthors}
-        handleItemChange={handleAuthorChange}
-        toggleExpand={toggleFilterArticles}
-        isExpanded={isArticlesExpanded}
-      />
+      {authorsFilterList?.length > 0 && (
+        <CollapsibleFilter
+          key={2}
+          title="Select Author(s)"
+          items={authorsFilterList}
+          selectedItems={selectedAuthors}
+          handleItemChange={handleAuthorChange}
+          toggleExpand={toggleFilterArticles}
+          isExpanded={isArticlesExpanded}
+        />
+      )}
       {/* Date Filter */}
       <DatePicker
         startDate={startDate}

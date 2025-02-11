@@ -9,8 +9,7 @@ services:
       - "3000:3000"
     volumes:
       - .:/app
-      - /app/node_modules
     environment:
       - CHOKIDAR_USEPOLLING=true # For better file watching in Docker
       - NODE_ENV=development
-    command: ["yarn", "start"]
+    command: ["npm", "start"]

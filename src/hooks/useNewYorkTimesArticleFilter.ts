@@ -118,7 +118,7 @@ const useNewYorkTimesArticleFilter = () => {
   const mappedArticles = articles?.map((article: Article) => ({
     ...article,
     source: { name: article.source || "Unknown" },
-    author: article.byline || "Unknown",
+    author: article?.byline?.original || "Unknown",
   }));
 
   const updatedArticles = filteredArticles?.map((article: any) => {
@@ -133,6 +133,8 @@ const useNewYorkTimesArticleFilter = () => {
 
     return {
       ...article,
+      author: article?.byline?.original,
+      url: article?.web_url,
       title: article?.headline?.main,
       description,
       urlToImage: imageUrl || article?.urlToImage,
