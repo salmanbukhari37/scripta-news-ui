@@ -22,6 +22,14 @@ Switch between light and night modes to suit your preference.
 
 ![News Page - Dark](src/assets/app-images/News-Page-Dark.png)
 
+#### Mobile View Night Mode
+
+![News Page - Mobile Dark](src/assets/app-images/News-Mobile-Dark.png)
+
+#### Sidebar
+
+![News Page - Sidebar Mobile Dark](src/assets/app-images/News-Mobile-Sidebar-Dark.png)
+
 ### New York Times
 
 ![New York Times](src/assets/app-images/NYC-Page.png)

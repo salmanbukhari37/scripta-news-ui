@@ -5,6 +5,7 @@ const BBCNews = React.lazy(() => import("../components/BbcNews"));
 const NotFound = React.lazy(() => import("../components/NotFound"));
 
 export const routes = [
+  { path: "/", element: <NewsApp /> },
   { path: "/news", element: <NewsApp /> },
   { path: "/nyt", element: <NewYorkTimes /> },
   { path: "/bbc-news", element: <BBCNews /> },
